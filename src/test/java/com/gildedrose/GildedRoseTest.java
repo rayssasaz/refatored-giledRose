@@ -143,4 +143,33 @@ class GildedRoseTest {
         assertEquals("0, 80", items[3].sellIn + ", " + items[3].quality);
         assertEquals("0, 50", items[4].sellIn + ", " + items[4].quality);
     }
+
+    @Test
+    void conjuredItemDecreasesQualityTwiceAsFastBeforeSellDate() {
+        Item item = updateSingleItem("Conjured Mana Cake", 3, 6);
+        assertEquals(2, item.sellIn);
+        assertEquals(4, item.quality);
+    }
+
+    @Test
+    void conjuredItemDecreasesQualityFourTimesAsFastOnAndAfterSellDate() {
+        Item onSellDate = updateSingleItem("Conjured Mana Cake", 0, 10);
+        assertEquals(-1, onSellDate.sellIn);
+        assertEquals(6, onSellDate.quality);
+
+        Item pastSellDate = updateSingleItem("Conjured Mana Cake", -1, 10);
+        assertEquals(-2, pastSellDate.sellIn);
+        assertEquals(6, pastSellDate.quality);
+    }
+
+    @Test
+    void conjuredItemQualityIsNeverNegative() {
+        Item lowQualityBeforeSellDate = updateSingleItem("Conjured Mana Cake", 3, 1);
+        assertEquals(2, lowQualityBeforeSellDate.sellIn);
+        assertEquals(0, lowQualityBeforeSellDate.quality);
+
+        Item lowQualityAfterSellDate = updateSingleItem("Conjured Mana Cake", 0, 3);
+        assertEquals(-1, lowQualityAfterSellDate.sellIn);
+        assertEquals(0, lowQualityAfterSellDate.quality);
+    }
 }
